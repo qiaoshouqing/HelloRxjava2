@@ -1,10 +1,8 @@
 package me.baron.rxjava;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -120,9 +118,9 @@ public class HelloRxJava {
 //                });
 
         Observable.interval(200, TimeUnit.MILLISECONDS)
-                .subscribe(new Action1<Long>() {
+                .subscribe(new Consumer<Long>() {
                     @Override
-                    public void call(Long aLong) {
+                    public void accept(Long aLong) throws Exception {
                         System.out.println(aLong+"");
                     }
                 });

@@ -1,9 +1,13 @@
 package me.baron.rxjava.mapping;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
-import rx.functions.Func1;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * <p>GitHub:   <a href="https://github.com/BaronZ88"></p>
@@ -15,39 +19,52 @@ import rx.functions.Func1;
  */
 public class OperatorMapTest {
 
+
     public static void main(String[] args) {
 
+
+        //测试1
         Observable.just(1, 2, 3, 4, 5)
-                .map(new Func1<Integer, String>() {
+                .map(new Function<Integer, String>() {
+
                     @Override
-                    public String call(Integer i) {
-                        return "This is " + i;
+                    public String apply(Integer integer) throws Exception {
+                        return "This is " + integer;
                     }
-                }).subscribe(new Action1<String>() {
+                }).subscribe(new Consumer<String>() {
             @Override
-            public void call(String s) {
+            public void accept(String s) throws Exception {
                 System.out.println(s);
             }
         });
 
 
-        Observable<Integer> observableA = Observable.create(new Observable.OnSubscribe<Integer>() {
+        //测试2
+        Observable<Integer> observableA = Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-                subscriber.onNext(1);
-                subscriber.onCompleted();
+            public void subscribe(ObservableEmitter<Integer> observableEmitter) throws Exception {
+                observableEmitter.onNext(1);
+                observableEmitter.onComplete();
             }
         });
 
-        Subscriber<String> mSubscriber = new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("onCompleted!");
-            }
+        Observer<String> mObserver = new Observer<String>() {
+
             @Override
             public void onError(Throwable e) {
                 System.out.println(e.getMessage());
             }
+
+            @Override
+            public void onComplete() {
+                System.out.println("onCompleted!");
+            }
+
+            @Override
+            public void onSubscribe(Disposable disposable) {
+
+            }
+
             @Override
             public void onNext(String s) {
                 System.out.println(s);
@@ -55,38 +72,44 @@ public class OperatorMapTest {
         };
 
         Observable<String> observableB =
-                observableA.map(new Func1<Integer, String>() {
-                        @Override
-                        public String call(Integer integer) {
-                            return "This is " + integer;
-                        }
-                    });
+                observableA.map(new Function<Integer, String>() {
+                    @Override
+                    public String apply(Integer integer) throws Exception {
+                        return "This is " + integer;
+                    }
+                });
 
-        observableB.subscribe(mSubscriber);
+        observableB.subscribe(mObserver);
 
-        Observable.create(new Observable.OnSubscribe<Integer>() {
+
+        //测试3
+        Observable.create(new ObservableOnSubscribe<Integer>() {
 
             @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-
-                subscriber.onNext(1);
-                subscriber.onCompleted();
+            public void subscribe(ObservableEmitter<Integer> observableEmitter) throws Exception {
+                observableEmitter.onNext(1);
+                observableEmitter.onComplete();
             }
-        }).map(new Func1<Integer, String>() {
+        }).map(new Function<Integer, String>() {
 
             @Override
-            public String call(Integer integer) {
+            public String apply(Integer integer) throws Exception {
                 return "This is " + integer;
             }
-        }).subscribe(new Subscriber<String>() {
+        }).subscribe(new Observer<String>() {
             @Override
-            public void onCompleted() {
+            public void onComplete() {
                 System.out.println("onCompleted!");
             }
 
             @Override
             public void onError(Throwable e) {
                 System.out.println(e.getMessage());
+            }
+
+            @Override
+            public void onSubscribe(Disposable disposable) {
+
             }
 
             @Override
