@@ -3,6 +3,7 @@ package me.baron.rxjava;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 import java.util.concurrent.TimeUnit;
 
@@ -118,9 +119,17 @@ public class HelloRxJava {
 //                });
 
         Observable.interval(200, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Long>() {
+                .map(new Function<Long, String>() {
                     @Override
-                    public void accept(Long aLong) throws Exception {
+                    public String apply(Long aLong) throws Exception {
+                        System.out.println("before this is " + aLong);
+                        return "this is " + aLong;
+                    }
+                })
+                .take(3)
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String aLong) throws Exception {
                         System.out.println(aLong+"");
                     }
                 });

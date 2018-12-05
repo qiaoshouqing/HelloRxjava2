@@ -32,10 +32,10 @@ public class OperatorMapTest {
                         return "This is " + integer;
                     }
                 }).subscribe(new Consumer<String>() {
-            @Override
-            public void accept(String s) throws Exception {
-                System.out.println(s);
-            }
+                    @Override
+                    public void accept(String s) throws Exception {
+                        System.out.println(s);
+                    }
         });
 
 
