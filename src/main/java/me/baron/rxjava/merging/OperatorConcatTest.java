@@ -22,15 +22,23 @@ public class OperatorConcatTest {
     public static void main(String[] args) {
 
         String[] letters = new String[]{"A", "B", "C", "D", "E", "F", "G", "H"};
-        Observable<String> letterSequence = Observable.interval(300, TimeUnit.MILLISECONDS)
+        Observable<String> letterSequence = Observable.interval(1000, TimeUnit.MILLISECONDS)
                 .map(new Function<Long, String>() {
                     @Override
                     public String apply(Long position) throws Exception {
+                        System.out.println(letters[position.intValue()] + "");
                         return letters[position.intValue()];
                     }
                 }).take(letters.length);
 
-        Observable<Long> numberSequence = Observable.interval(500, TimeUnit.MILLISECONDS).take(5);
+        Observable<String> numberSequence = Observable.interval(500, TimeUnit.MILLISECONDS).take(5)
+                .map(new Function<Long, String>() {
+                    @Override
+                    public String apply(Long aLong) throws Exception {
+                        System.out.println(aLong + "");
+                        return "" + aLong;
+                    }
+                });
 
         Observable.concat(letterSequence, numberSequence)
                 .subscribe(new Observer<Serializable>() {
@@ -52,7 +60,7 @@ public class OperatorConcatTest {
 
                     @Override
                     public void onNext(Serializable serializable) {
-                        System.out.print(serializable.toString() + " ");
+                        System.out.println("result:" + serializable.toString() + " ");
                     }
                 });
 
